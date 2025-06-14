@@ -1,0 +1,66 @@
+MIT License
+
+Copyright (c) 2025 Harshith Vaddiparthy - LingHack VI Dashboard Application
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+===============================================================================
+
+ADDITIONAL LEGAL NOTICES:
+
+1. HACKATHON CONTEXT:
+   This software was developed as part of LingHack VI, a hackathon event.
+   The software is provided as educational material and a foundation for
+   further development by hackathon participants and the developer community.
+
+2. THIRD-PARTY COMPONENTS:
+   This software includes third-party libraries and components that are
+   subject to their own license terms. Please refer to the respective
+   license files and documentation for these components:
+   
+   - Next.js (MIT License)
+   - React (MIT License)
+   - Tailwind CSS (MIT License)
+   - Radix UI (MIT License)
+   - TypeScript (Apache License 2.0)
+   - And other dependencies listed in package.json
+
+3. DISCLAIMER:
+   This software is provided for educational and demonstration purposes.
+   While every effort has been made to ensure the quality and security of
+   the code, users should review and test the software thoroughly before
+   using it in production environments.
+
+4. CONTRIBUTION GUIDELINES:
+   Contributions to this project are welcome and will be considered to be
+   made under the same MIT License. By submitting a pull request, you
+   agree to license your contribution under the MIT License.
+
+5. TRADEMARK NOTICE:
+   "LingHack VI" and associated branding are trademarks of the respective
+   hackathon organizers. This software is not officially endorsed by
+   the hackathon organizers unless explicitly stated.
+
+===============================================================================
+
+For questions regarding this license or the software, please contact:
+- GitHub Issues: https://github.com/harshith-eth/linghack6-mentor-session/issues
+- Email: Contact through GitHub profile
+
+Last updated: January 2025 
