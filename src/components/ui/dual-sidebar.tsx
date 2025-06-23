@@ -115,12 +115,12 @@ export function ResizableWrapper({ children }: { children: React.ReactNode }) {
   const rightSidebar = childrenArray[1]
 
   return (
-    <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-      <ResizablePanel defaultSize={75} minSize={50} className="overflow-hidden">
+    <ResizablePanelGroup direction="horizontal" className="h-full w-full transition-all duration-300 ease-in-out">
+      <ResizablePanel defaultSize={75} minSize={50} className="overflow-hidden transition-all duration-300 ease-in-out">
         {mainContent}
       </ResizablePanel>
-      <ResizableHandle withHandle className="bg-border hover:bg-accent" />
-      <ResizablePanel defaultSize={25} minSize={20} maxSize={40} className="overflow-hidden">
+      <ResizableHandle withHandle className="bg-border hover:bg-accent transition-all duration-300 ease-in-out" />
+      <ResizablePanel defaultSize={25} minSize={20} maxSize={40} className="overflow-hidden transition-all duration-300 ease-in-out">
         {rightSidebar}
       </ResizablePanel>
     </ResizablePanelGroup>
