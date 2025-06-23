@@ -4,8 +4,8 @@ import * as React from "react"
 import { IconSend, IconMessage2 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { RightSidebar } from "@/components/ui/dual-sidebar"
 import {
-  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
@@ -14,7 +14,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-export function AppSidebarRight({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebarRight({ ...props }: React.ComponentProps<typeof RightSidebar>) {
   const [message, setMessage] = React.useState("")
   const [messages, setMessages] = React.useState([
     { id: 1, text: "Hello! How can I help you today?", isBot: true, timestamp: new Date() },
@@ -51,7 +51,7 @@ export function AppSidebarRight({ ...props }: React.ComponentProps<typeof Sideba
   }
 
   return (
-    <Sidebar collapsible="icon" side="right" {...props}>
+    <RightSidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -104,6 +104,6 @@ export function AppSidebarRight({ ...props }: React.ComponentProps<typeof Sideba
           </Button>
         </div>
       </SidebarFooter>
-    </Sidebar>
+    </RightSidebar>
   )
 } 
