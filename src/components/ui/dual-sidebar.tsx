@@ -123,12 +123,7 @@ export function RightSidebar({
   }
 
   return (
-    <div
-      className="group peer text-sidebar-foreground hidden md:block"
-      data-state={state}
-      data-side="right"
-      data-slot="right-sidebar"
-    >
+    <>
       {/* Sidebar gap */}
       <div
         className={cn(
@@ -140,18 +135,17 @@ export function RightSidebar({
         className={cn(
           "fixed inset-y-0 right-0 z-10 hidden h-svh w-80 transition-[right,width] duration-200 ease-linear md:flex",
           state === "collapsed" && "right-[calc(20rem*-1)] w-12",
-          "p-2",
+          "bg-sidebar",
+          "flex flex-col",
           className
         )}
+        data-sidebar="right-sidebar"
+        data-state={state}
+        data-side="right"
         {...props}
       >
-        <div
-          data-sidebar="right-sidebar-inner"
-          className="bg-sidebar border-sidebar-border flex h-full w-full flex-col rounded-lg border shadow-sm"
-        >
-          {children}
-        </div>
+        {children}
       </div>
-    </div>
+    </>
   )
 } 
