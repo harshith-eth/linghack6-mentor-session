@@ -19,6 +19,7 @@ export default function Page() {
           "--header-height": "calc(var(--spacing) * 12)",
         } as React.CSSProperties
       }
+      className="pt-12"
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
