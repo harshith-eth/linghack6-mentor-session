@@ -181,4 +181,34 @@
     box-shadow: var(--shadow-lg);
     backdrop-filter: blur(10px);
   }
+
+  /* Hide scrollbars globally while maintaining scroll functionality */
+  .scrollbar-hide {
+    /* For WebKit browsers (Chrome, Safari, Edge) */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* For Firefox */
+    scrollbar-width: none;
+    
+    /* For IE/Edge Legacy */
+    -ms-overflow-style: none;
+  }
+}
+
+/* Apply to all overflow-auto and overflow-y-auto elements */
+.overflow-auto,
+.overflow-y-auto,
+.overflow-x-auto {
+  /* For WebKit browsers (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* For Firefox */
+  scrollbar-width: none;
+  
+  /* For IE/Edge Legacy */
+  -ms-overflow-style: none;
 }

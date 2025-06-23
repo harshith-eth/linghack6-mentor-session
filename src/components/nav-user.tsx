@@ -4,9 +4,13 @@ import {
   IconCreditCard,
   IconDotsVertical,
   IconLogout,
+  IconMoon,
   IconNotification,
+  IconSun,
   IconUserCircle,
 } from "@tabler/icons-react"
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 import {
   Avatar,
@@ -39,6 +43,17 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  // Avoid hydration issues
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
 
   return (
     <SidebarMenu>
@@ -95,6 +110,20 @@ export function NavUser({
               <DropdownMenuItem>
                 <IconNotification />
                 Notifications
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
+                {mounted && (
+                  <>
+                    {theme === "dark" ? <IconSun /> : <IconMoon />}
+                    {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                  </>
+                )}
+                {!mounted && (
+                  <>
+                    <IconMoon />
+                    Theme
+                  </>
+                )}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
