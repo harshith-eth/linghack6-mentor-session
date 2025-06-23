@@ -12,6 +12,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
 
 // Context for right sidebar
 type RightSidebarContextProps = {
@@ -95,6 +100,33 @@ export function RightSidebarTrigger({
   )
 }
 
+// NEW: Resizable wrapper for the main content and right sidebar
+export function ResizableWrapper({ children }: { children: React.ReactNode }) {
+  const { state, isMobile } = useRightSidebar()
+  
+  // If mobile or sidebar is collapsed, don't use resizable wrapper
+  if (isMobile || state === "collapsed") {
+    return <>{children}</>
+  }
+
+  // When sidebar is open on desktop, use resizable panels
+  const childrenArray = React.Children.toArray(children)
+  const mainContent = childrenArray[0]
+  const rightSidebar = childrenArray[1]
+
+  return (
+    <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+      <ResizablePanel defaultSize={75} minSize={50} className="overflow-hidden">
+        {mainContent}
+      </ResizablePanel>
+      <ResizableHandle withHandle className="bg-border hover:bg-accent" />
+      <ResizablePanel defaultSize={25} minSize={20} maxSize={40} className="overflow-hidden">
+        {rightSidebar}
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  )
+}
+
 // NEW: Independent RightSidebar component that doesn't interfere with left sidebar
 export function RightSidebar({
   className,
@@ -122,30 +154,28 @@ export function RightSidebar({
     )
   }
 
-  return (
-    <>
-      {/* Sidebar gap */}
+  // When collapsed, show the gap like the original
+  if (state === "collapsed") {
+    return (
       <div
-        className={cn(
-          "relative w-80 bg-transparent transition-[width] duration-200 ease-linear",
-          state === "collapsed" && "w-12"
-        )}
+        className="relative w-12 bg-transparent transition-[width] duration-200 ease-linear"
       />
-      <div
-        className={cn(
-          "fixed inset-y-0 right-0 z-10 hidden h-svh w-80 transition-[right,width] duration-200 ease-linear md:flex",
-          state === "collapsed" && "right-[calc(20rem*-1)] w-12",
-          "bg-sidebar",
-          "flex flex-col",
-          className
-        )}
-        data-sidebar="right-sidebar"
-        data-state={state}
-        data-side="right"
-        {...props}
-      >
-        {children}
-      </div>
-    </>
+    )
+  }
+
+  // When expanded, return the sidebar content for use in ResizableWrapper
+  return (
+    <div
+      className={cn(
+        "bg-sidebar text-sidebar-foreground flex flex-col h-full",
+        className
+      )}
+      data-sidebar="right-sidebar"
+      data-state={state}
+      data-side="right"
+      {...props}
+    >
+      {children}
+    </div>
   )
 } 
