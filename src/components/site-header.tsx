@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { RightSidebarTrigger } from "@/components/ui/dual-sidebar"
 
 export function SiteHeader() {
   return (
@@ -25,8 +24,6 @@ export function SiteHeader() {
               GitHub
             </a>
           </Button>
-          {/* RIGHT SIDEBAR TOGGLE - Only controls the right sidebar */}
-          <RightSidebarTrigger className="-mr-1" />
         </div>
       </div>
     </header>

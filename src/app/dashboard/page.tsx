@@ -8,7 +8,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import { RightSidebarProvider } from "@/components/ui/dual-sidebar"
+import { RightSidebarProvider, RightSidebarTrigger } from "@/components/ui/dual-sidebar"
 
 import data from "./data.json"
 
@@ -25,6 +25,8 @@ export default function Page() {
         }
         className="pt-16"
       >
+        <RightSidebarTrigger className="fixed top-4 right-4 z-50 size-7 -mr-1" />
+        
         <AppSidebar variant="inset" />
         <SidebarInset>
           <SiteHeader />
@@ -40,7 +42,7 @@ export default function Page() {
             </div>
           </div>
         </SidebarInset>
-        <AppSidebarRight variant="inset" side="right" />
+        <AppSidebarRight />
       </SidebarProvider>
     </RightSidebarProvider>
   )
