@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { PanelLeftIcon, PanelRightIcon } from "lucide-react"
+import { PanelLeftIcon, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
@@ -89,7 +89,7 @@ export function RightSidebarTrigger({
       }}
       {...props}
     >
-      <PanelRightIcon />
+      <Sparkles className="size-6" strokeWidth={1.5} />
       <span className="sr-only">Toggle Right Sidebar</span>
     </Button>
   )

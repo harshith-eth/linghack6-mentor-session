@@ -23,21 +23,23 @@ export default function Page() {
             "--header-height": "calc(var(--spacing) * 12)",
           } as React.CSSProperties
         }
-        className="pt-16"
+        className="pt-16 pb-5 h-screen overflow-hidden"
       >
         <RightSidebarTrigger className="fixed top-4 right-4 z-50 size-7 -mr-1" />
         
         <AppSidebar variant="inset" />
-        <SidebarInset>
+        <SidebarInset className="flex flex-col h-full">
           <SiteHeader />
-          <div className="flex flex-1 flex-col">
-            <div className="@container/main flex flex-1 flex-col gap-2">
-              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                <SectionCards />
-                <div className="px-4 lg:px-6">
-                  <ChartAreaInteractive />
+          <div className="flex-1 overflow-hidden">
+            <div className="@container/main h-full flex flex-col">
+              <div className="flex-1 overflow-y-auto">
+                <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                  <SectionCards />
+                  <div className="px-4 lg:px-6">
+                    <ChartAreaInteractive />
+                  </div>
+                  <DataTable data={data} />
                 </div>
-                <DataTable data={data} />
               </div>
             </div>
           </div>
