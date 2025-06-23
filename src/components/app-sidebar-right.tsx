@@ -128,24 +128,38 @@ export function AppSidebarRight({ ...props }: React.ComponentProps<typeof RightS
             </div>
 
             {/* Quick Action Buttons */}
-            <div className="flex flex-wrap gap-2">
-              {quickActions.map((action, index) => (
+            <div className="space-y-2">
+              {/* First row: Organize inbox and Find urgent emails */}
+              <div className="flex gap-2 justify-between">
                 <Button
-                  key={index}
                   variant="outline"
                   size="sm"
-                  className={cn(
-                    "text-xs px-3 py-2 h-auto rounded-full border border-border hover:bg-accent hover:text-accent-foreground",
-                    index === 0 && "bg-accent text-accent-foreground"
-                  )}
+                  className="text-xs px-3 py-2 h-auto rounded-full border border-border hover:bg-accent hover:text-accent-foreground bg-accent text-accent-foreground flex-1"
                 >
-                  {action}
+                  Organize my inbox
                 </Button>
-              ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs px-3 py-2 h-auto rounded-full border border-border hover:bg-accent hover:text-accent-foreground flex-1"
+                >
+                  Find urgent emails
+                </Button>
+              </div>
+              {/* Second row: Plan my day centered */}
+              <div className="flex justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs px-3 py-2 h-auto rounded-full border border-border hover:bg-accent hover:text-accent-foreground"
+                >
+                  Plan my day
+                </Button>
+              </div>
             </div>
 
             {/* What can I ask section */}
-            <div className="pt-6">
+            <div className="pt-6 text-center">
               <h6 className="text-sm font-medium text-muted-foreground mb-2">
                 What can I ask?
               </h6>
