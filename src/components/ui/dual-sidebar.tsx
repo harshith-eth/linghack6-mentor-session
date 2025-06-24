@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { PanelLeftIcon, Sparkles } from "lucide-react"
+import { PanelLeftIcon } from "lucide-react"
+import { IconSparkles, IconChevronsRight } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
@@ -80,23 +81,38 @@ export function RightSidebarTrigger({
   className,
   onClick,
   ...props
-}: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useRightSidebar()
+}: React.ComponentProps<"button">) {
+  const { toggleSidebar, state } = useRightSidebar()
+  const isOpen = state === "expanded"
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className={cn("size-7", className)}
+    <button
+      className={cn("fixed top-4 right-6 z-50 cursor-pointer", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
       {...props}
     >
-      <Sparkles className="size-6" strokeWidth={1.5} />
+      <div className="relative size-8">
+        <IconSparkles 
+          className={cn(
+            "absolute inset-0 size-8 text-primary hover:opacity-80 transition-all duration-300 ease-in-out",
+            isOpen ? "opacity-0 rotate-90 scale-90" : "opacity-100 rotate-0 scale-100"
+          )} 
+          strokeWidth={1.5} 
+          fill="currentColor" 
+        />
+        <IconChevronsRight 
+          className={cn(
+            "absolute inset-0 size-8 text-primary hover:opacity-80 transition-all duration-300 ease-in-out",
+            isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-90"
+          )} 
+          strokeWidth={1.5} 
+        />
+      </div>
       <span className="sr-only">Toggle Right Sidebar</span>
-    </Button>
+    </button>
   )
 }
 
@@ -115,12 +131,12 @@ export function ResizableWrapper({ children }: { children: React.ReactNode }) {
   const rightSidebar = childrenArray[1]
 
   return (
-    <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-      <ResizablePanel defaultSize={75} minSize={50} className="overflow-hidden">
+    <ResizablePanelGroup direction="horizontal" className="h-full w-full transition-all duration-300 ease-in-out">
+      <ResizablePanel defaultSize={75} minSize={50} className="overflow-hidden transition-all duration-300 ease-in-out">
         {mainContent}
       </ResizablePanel>
-      <ResizableHandle withHandle className="bg-border hover:bg-accent" />
-      <ResizablePanel defaultSize={25} minSize={20} maxSize={40} className="overflow-hidden">
+      <ResizableHandle withHandle className="bg-border hover:bg-accent transition-all duration-300 ease-in-out" />
+      <ResizablePanel defaultSize={25} minSize={20} maxSize={40} className="overflow-hidden transition-all duration-300 ease-in-out">
         {rightSidebar}
       </ResizablePanel>
     </ResizablePanelGroup>
