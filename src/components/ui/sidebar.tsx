@@ -305,12 +305,21 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
 }
 
 function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
+  const context = React.useContext(SidebarContext)
+  
+  // Always apply inset styling on desktop to ensure consistency
+  // This ensures rounded corners regardless of DOM structure
+  const isDesktop = context && !context.isMobile
+
   return (
     <main
       data-slot="sidebar-inset"
       className={cn(
         "bg-background relative flex w-full flex-1 flex-col",
+        // Standard peer-based styling for normal cases
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
+        // Force consistent styling on desktop to handle wrapped scenarios  
+        isDesktop ? "md:m-2 md:ml-0 md:rounded-xl md:shadow-sm" : "",
         className
       )}
       {...props}

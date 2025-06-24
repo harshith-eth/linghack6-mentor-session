@@ -125,14 +125,15 @@ export function ResizableWrapper({ children }: { children: React.ReactNode }) {
     return <>{children}</>
   }
 
-  // When sidebar is open on desktop, use resizable panels
+  // When sidebar is open on desktop, we need to handle this differently
+  // to preserve the peer CSS relationship between left sidebar and SidebarInset
   const childrenArray = React.Children.toArray(children)
-  const mainContent = childrenArray[0]
-  const rightSidebar = childrenArray[1]
+  const mainContent = childrenArray[0] // SidebarInset
+  const rightSidebar = childrenArray[1] // AppSidebarRight
 
   return (
-    <ResizablePanelGroup direction="horizontal" className="h-full w-full transition-all duration-300 ease-in-out">
-      <ResizablePanel defaultSize={75} minSize={50} className="overflow-hidden transition-all duration-300 ease-in-out">
+    <ResizablePanelGroup direction="horizontal" className="flex-1 transition-all duration-300 ease-in-out">
+      <ResizablePanel defaultSize={75} minSize={50} className="transition-all duration-300 ease-in-out">
         {mainContent}
       </ResizablePanel>
       <ResizableHandle withHandle className="bg-border hover:bg-accent transition-all duration-300 ease-in-out" />
