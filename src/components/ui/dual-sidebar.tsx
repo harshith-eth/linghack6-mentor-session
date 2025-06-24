@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { PanelLeftIcon } from "lucide-react"
 import { IconSparkles, IconChevronsRight } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -14,20 +13,22 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
+  TooltipProvider,
+} from "@/components/ui/tooltip"
 
-// Context for right sidebar
+const SIDEBAR_WIDTH = "20rem"
+const SIDEBAR_WIDTH_MOBILE = "18rem"
+const SIDEBAR_WIDTH_ICON = "3rem"
+
+// Context for right sidebar - matches the left sidebar exactly
 type RightSidebarContextProps = {
+  state: "expanded" | "collapsed"
   open: boolean
   setOpen: (open: boolean) => void
-  toggleSidebar: () => void
   openMobile: boolean
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
-  state: "expanded" | "collapsed"
+  toggleSidebar: () => void
 }
 
 const RightSidebarContext = React.createContext<RightSidebarContextProps | null>(null)
@@ -42,124 +43,125 @@ export function useRightSidebar() {
 
 export function RightSidebarProvider({
   defaultOpen = false,
+  open: openProp,
+  onOpenChange: setOpenProp,
+  className,
+  style,
   children,
-}: {
+  ...props
+}: React.ComponentProps<"div"> & {
   defaultOpen?: boolean
-  children: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }) {
   const isMobile = useIsMobile()
-  const [open, setOpen] = React.useState(defaultOpen)
   const [openMobile, setOpenMobile] = React.useState(false)
 
+  // Internal state management - matches left sidebar exactly
+  const [_open, _setOpen] = React.useState(defaultOpen)
+  const open = openProp ?? _open
+  const setOpen = React.useCallback(
+    (value: boolean | ((value: boolean) => boolean)) => {
+      const openState = typeof value === "function" ? value(open) : value
+      if (setOpenProp) {
+        setOpenProp(openState)
+      } else {
+        _setOpen(openState)
+      }
+    },
+    [setOpenProp, open]
+  )
+
+  // Toggle function - matches left sidebar exactly
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open)
-  }, [isMobile, setOpenMobile])
+  }, [isMobile, setOpen, setOpenMobile])
 
+  // State for CSS targeting - matches left sidebar exactly
   const state = open ? "expanded" : "collapsed"
 
   const contextValue = React.useMemo<RightSidebarContextProps>(
     () => ({
+      state,
       open,
       setOpen,
-      toggleSidebar,
+      isMobile,
       openMobile,
       setOpenMobile,
-      isMobile,
-      state,
+      toggleSidebar,
     }),
-    [open, setOpen, toggleSidebar, openMobile, setOpenMobile, isMobile, state]
+    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
   )
 
   return (
     <RightSidebarContext.Provider value={contextValue}>
-      {children}
+      <TooltipProvider delayDuration={0}>
+        <div
+          data-slot="right-sidebar-wrapper"
+          style={
+            {
+              "--right-sidebar-width": SIDEBAR_WIDTH,
+              "--right-sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+              ...style,
+            } as React.CSSProperties
+          }
+          className={cn(
+            "group/right-sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
+            className
+          )}
+          {...props}
+        >
+          {children}
+        </div>
+      </TooltipProvider>
     </RightSidebarContext.Provider>
   )
 }
 
-export function RightSidebarTrigger({
-  className,
-  onClick,
-  ...props
-}: React.ComponentProps<"button">) {
-  const { toggleSidebar, state } = useRightSidebar()
-  const isOpen = state === "expanded"
-
-  return (
-    <button
-      className={cn("fixed top-4 right-6 z-50 cursor-pointer", className)}
-      onClick={(event) => {
-        onClick?.(event)
-        toggleSidebar()
-      }}
-      {...props}
-    >
-      <div className="relative size-8">
-        <IconSparkles 
-          className={cn(
-            "absolute inset-0 size-8 text-primary hover:opacity-80 transition-all duration-300 ease-in-out",
-            isOpen ? "opacity-0 rotate-90 scale-90" : "opacity-100 rotate-0 scale-100"
-          )} 
-          strokeWidth={1.5} 
-          fill="currentColor" 
-        />
-        <IconChevronsRight 
-          className={cn(
-            "absolute inset-0 size-8 text-primary hover:opacity-80 transition-all duration-300 ease-in-out",
-            isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-90"
-          )} 
-          strokeWidth={1.5} 
-        />
-      </div>
-      <span className="sr-only">Toggle Right Sidebar</span>
-    </button>
-  )
-}
-
-// NEW: Resizable wrapper for the main content and right sidebar
-export function ResizableWrapper({ children }: { children: React.ReactNode }) {
-  const { state, isMobile } = useRightSidebar()
-  
-  // If mobile or sidebar is collapsed, don't use resizable wrapper
-  if (isMobile || state === "collapsed") {
-    return <>{children}</>
-  }
-
-  // When sidebar is open on desktop, we need to handle this differently
-  // to preserve the peer CSS relationship between left sidebar and SidebarInset
-  const childrenArray = React.Children.toArray(children)
-  const mainContent = childrenArray[0] // SidebarInset
-  const rightSidebar = childrenArray[1] // AppSidebarRight
-
-  return (
-    <ResizablePanelGroup direction="horizontal" className="flex-1 transition-all duration-300 ease-in-out">
-      <ResizablePanel defaultSize={75} minSize={50} className="transition-all duration-300 ease-in-out">
-        {mainContent}
-      </ResizablePanel>
-      <ResizableHandle withHandle className="bg-border hover:bg-accent transition-all duration-300 ease-in-out" />
-      <ResizablePanel defaultSize={25} minSize={20} maxSize={40} className="overflow-hidden transition-all duration-300 ease-in-out">
-        {rightSidebar}
-      </ResizablePanel>
-    </ResizablePanelGroup>
-  )
-}
-
-// NEW: Independent RightSidebar component that doesn't interfere with left sidebar
+// Right sidebar component - exact copy of left sidebar but for right side
 export function RightSidebar({
+  side = "right",
+  variant = "inset",
+  collapsible = "offcanvas",
   className,
   children,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & {
+  side?: "left" | "right"
+  variant?: "sidebar" | "floating" | "inset"
+  collapsible?: "offcanvas" | "icon" | "none"
+}) {
   const { isMobile, state, openMobile, setOpenMobile } = useRightSidebar()
+
+  if (collapsible === "none") {
+    return (
+      <div
+        data-slot="right-sidebar"
+        className={cn(
+          "bg-sidebar text-sidebar-foreground flex h-full w-(--right-sidebar-width) flex-col",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    )
+  }
 
   if (isMobile) {
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
         <SheetContent
           data-sidebar="right-sidebar"
+          data-slot="right-sidebar"
           data-mobile="true"
-          className="bg-sidebar text-sidebar-foreground w-80 p-0 [&>button]:hidden"
-          side="right"
+          className="bg-sidebar text-sidebar-foreground w-(--right-sidebar-width) p-0 [&>button]:hidden"
+          style={
+            {
+              "--right-sidebar-width": SIDEBAR_WIDTH_MOBILE,
+            } as React.CSSProperties
+          }
+          side={side}
         >
           <SheetHeader className="sr-only">
             <SheetTitle>Right Sidebar</SheetTitle>
@@ -171,28 +173,150 @@ export function RightSidebar({
     )
   }
 
-  // When collapsed, show the gap like the original
-  if (state === "collapsed") {
-    return (
-      <div
-        className="relative w-12 bg-transparent transition-[width] duration-200 ease-linear"
-      />
-    )
-  }
-
-  // When expanded, return the sidebar content for use in ResizableWrapper
   return (
     <div
-      className={cn(
-        "bg-sidebar text-sidebar-foreground flex flex-col h-full",
-        className
-      )}
-      data-sidebar="right-sidebar"
+      className="group peer-right text-sidebar-foreground hidden md:block"
       data-state={state}
-      data-side="right"
+      data-collapsible={state === "collapsed" ? collapsible : ""}
+      data-variant={variant}
+      data-side={side}
+      data-slot="right-sidebar"
+    >
+      {/* Gap element - matches left sidebar but for right side */}
+      <div
+        data-slot="right-sidebar-gap"
+        className={cn(
+          "relative w-(--right-sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+          "group-data-[collapsible=offcanvas]:w-0",
+          variant === "floating" || variant === "inset"
+            ? "group-data-[collapsible=icon]:w-[calc(var(--right-sidebar-width-icon)+(--spacing(4)))]"
+            : "group-data-[collapsible=icon]:w-(--right-sidebar-width-icon)"
+        )}
+      />
+      <div
+        data-slot="right-sidebar-container"
+        className={cn(
+          "fixed inset-y-0 z-10 hidden h-svh w-(--right-sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--right-sidebar-width)*-1)]",
+          // Adjust the padding for floating and inset variants.
+          variant === "floating" || variant === "inset"
+            ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--right-sidebar-width-icon)+(--spacing(4))+2px)]"
+            : "group-data-[collapsible=icon]:w-(--right-sidebar-width-icon) border-l",
+          className
+        )}
+        {...props}
+      >
+        <div
+          data-sidebar="right-sidebar"
+          data-slot="right-sidebar-inner"
+          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function RightSidebarTrigger({
+  className,
+  onClick,
+  ...props
+}: React.ComponentProps<typeof Button>) {
+  const { toggleSidebar, state } = useRightSidebar()
+  const isOpen = state === "expanded"
+
+  return (
+    <Button
+      data-sidebar="right-trigger"
+      data-slot="right-sidebar-trigger"
+      variant="ghost"
+      size="icon"
+      className={cn("size-8", className)}
+      onClick={(event) => {
+        onClick?.(event)
+        toggleSidebar()
+      }}
       {...props}
     >
-      {children}
-    </div>
+      <div className="relative size-4">
+        <IconSparkles 
+          className={cn(
+            "absolute inset-0 size-4 transition-all duration-300 ease-in-out",
+            isOpen ? "opacity-0 rotate-90 scale-90" : "opacity-100 rotate-0 scale-100"
+          )} 
+          strokeWidth={1.5} 
+          fill="currentColor" 
+        />
+        <IconChevronsRight 
+          className={cn(
+            "absolute inset-0 size-4 transition-all duration-300 ease-in-out",
+            isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-90"
+          )} 
+          strokeWidth={1.5} 
+        />
+      </div>
+      <span className="sr-only">Toggle Right Sidebar</span>
+    </Button>
+  )
+}
+
+// Enhanced inset that responds to both sidebars
+export function DualSidebarInset({
+  className,
+  ...props
+}: React.ComponentProps<"main">) {
+  const rightContext = useRightSidebar()  
+  const isDesktop = rightContext && !rightContext.isMobile
+
+  return (
+    <main
+      data-slot="sidebar-inset"
+      className={cn(
+        "bg-background relative flex w-full flex-1 flex-col",
+        // Left sidebar peer styling
+        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2",
+        // Right sidebar peer styling - using peer-right
+        "md:peer-right-data-[variant=inset]:mr-2 md:peer-right-data-[state=collapsed]:mr-2",
+        // Force consistent styling on desktop
+        isDesktop ? "md:m-2 md:ml-0 md:rounded-xl md:shadow-sm" : "",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+// Sidebar components for right sidebar (same as left sidebar components)
+export function RightSidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="right-sidebar-header"
+      data-sidebar="header"
+      className={cn("flex flex-col gap-2 p-2", className)}
+      {...props}
+    />
+  )
+}
+
+export function RightSidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="right-sidebar-footer"
+      data-sidebar="footer"
+      className={cn("flex flex-col gap-2 p-2", className)}
+      {...props}
+    />
+  )
+}
+
+export function RightSidebarContent({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="right-sidebar-content"
+      data-sidebar="content"
+      className={cn("flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden", className)}
+      {...props}
+    />
   )
 } 
